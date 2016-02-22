@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>业务管理后台</title>
+	#parse("bgm/include.vm")
+</head>
+<frameset rows="70,*" cols="*" frameborder="no" border="0" framespacing="0">
+  <frame src="$bgm_url/top.html" name="topFrame" scrolling="No" noresize="noresize" id="topFrame" title="topFrame" />
+  <frameset cols="204,*" frameborder="no" border="0" framespacing="0">
+    <frame src="$bgm_url/left.html" name="leftFrame" scrolling="No" noresize="noresize" id="leftFrame" title="leftFrame" />
+    <frame src="$bgm_url/welcome.html" name="mainFrame" id="mainFrame" title="mainFrame" />
+  </frameset>
+</frameset>
+</html>

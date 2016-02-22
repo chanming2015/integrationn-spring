@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <title>业务管理后台</title>
+	#parse("bgm/include.vm")
+    <link href="$template_url/admin/css/css.css" rel="stylesheet" type="text/css" />
+	<script>
+		function tick(){
+			var now = new Date();
+			var years = now.getFullYear();
+			var month = now.getMonth()+1;
+			var dates = now.getDate();
+			var hours = now.getHours();
+			var Minutes = now.getMinutes();
+			var Seconds = now.getSeconds();
+			if(hours < 10) hours = "0" + hours;
+			if(Minutes < 10) Minutes = "0" + Minutes;
+			if(Seconds<10) Seconds = "0" + Seconds;
+			var titletext = years + "年" + month + "月" + dates + "日" + hours + ":" + Minutes + ":" + Seconds;
+			Clock.innerHTML = titletext;
+			window.setTimeout("tick();", 100); 
+		}
+		window.onload = tick; 
+	</script>
+
+</head>
+<body>
+	<div class="top line_botoom">
+		<div class="topL">
+			<img src="$template_url/admin/images/logo.png">
+			<img src="$template_url/admin/images/top1.png">
+		</div>
+	    <div class="topR">
+	    	<img src="$template_url/admin/images/top2.png">
+	    	<span class="on">您好，<span class="color_blue">$!user！</span></span>
+	        <a href="javascript:if(confirm('您确定要退出本系统了吗？')){top.window.location.href='logout.html'}" target="_parent">退出</a>
+	        <br/>
+	        <span id="Clock"></span>
+	    </div>
+	</div>
+</body>
+</html>
+

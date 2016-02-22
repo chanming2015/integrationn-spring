@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<toolbox>
+	<tool>
+		<key>dateTool</key>
+		<scope>request</scope>
+		<class>org.apache.velocity.tools.generic.DateTool</class>
+	</tool>
+	<tool>
+		<key>numberTool</key>
+		<scope>request</scope>
+		<class>org.apache.velocity.tools.generic.NumberTool</class>
+	</tool>
+	<tool>
+		<key>props</key>
+		<scope>application</scope>
+		<class>com.github.chanming2015.common.util.config.Config</class>
+	</tool>
+</toolbox>

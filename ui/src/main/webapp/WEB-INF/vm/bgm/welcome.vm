@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <title>业务管理后台</title>
+    #parse("bgm/include.vm")
+    <link href="$template_url/admin/css/css.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="Welcome">
+		<div class="WelcomeAll">
+		    <img src="$template_url/admin/images/logo.png">
+		    <br/>
+		    <span class="on1">欢迎登录业务运营管理系统</span>
+		    <br/>
+		    <span class="on2">Welcome operations management system</span>
+	    </div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+#parse("bgm/include.vm")
+<meta charset="utf-8" />
+<title>业务运营管理系统</title>
+<link rel="stylesheet" type="text/css" href="$template_url/admin/css/css.css" />
+<link rel="stylesheet" type="text/css" href="$template_url/admin/css/404.css" />
+
+</head>
+<body>
+	<div class="div404">
+		<div class="div500All">
+	    	<span class="font404-1">您访问的网页地址不存在</span><br/><br/>
+			非常抱歉，您访问的地址并不存在。<br/>
+			可能的原因有：<br/><br/>
+	        1.我们的程序出错了<br/>
+	        2.网络出现异常<br/><br/>
+	        <a href="javascript:history.go(-1);" class="anniu_hui100">返 回</a>
+	    </div>
+	</div>
+</body>
+</html>

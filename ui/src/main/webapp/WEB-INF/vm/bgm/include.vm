@@ -1,0 +1,16 @@
+#set($front_url=$!props.getProperty('front_url',''))
+
+#set($template_url= $front_url + "/template")
+#set($static_url= $front_url + "/template")
+
+#set($uploads=$front_url+"/uploads")				    ## file reference
+#set($downloads=$front_url+"/downloads")				## file reference
+<script src="$template_url/admin/js/jquery.min.js"></script>
+<script src="$template_url/admin/js/jquery.validate.js"></script>
+<script src="$template_url/admin/js/jquery.metadata.js"></script>
+<script src="$template_url/admin/js/messages_cn.js"></script>
+<script>
+	var static_url = "$static_url";
+	var upload = "$upload";
+	var front_url = "$front_url";
+</script>

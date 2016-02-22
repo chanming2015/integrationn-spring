@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>业务运营管理系统</title>
+	#parse("bgm/include.vm")
+	<link href="$template_url/admin/css/lanrenzhijia.css" type="text/css" rel="stylesheet" />
+    <script src="$template_url/admin/js/jquery.min.js"></script>
+    <script src="$template_url/admin/js/lanrenzhijia.js"></script>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<style type="text/css">
+		body {
+			margin-left: 10px;
+			margin-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="lanrenzhijia" style="float:left">
+		<div class="left1">管理功能</div>
+		<ul id="nav_dot">
+			#if($menus)
+	        #foreach($menu in $!menus)
+	        #if($menu.children.size() > 0)
+			<li>
+				<h4>$!menu.name</h4>
+				<div class="list-item none">
+					#foreach($child in $!menu.children)
+					#if($!child.useBgm)
+	          			<a href='$!bgm_url/list/$!child.id' target="mainFrame">$!child.name</a>
+	          		#else
+	          			<a href='$!front_url/$!child.actionUrl' target="mainFrame">$!child.name</a>
+	          		#end
+	          		#end
+				</div>
+	        </li>
+	        #end
+	        #end
+	        #end
+	  </ul>
+	</div>
+
+<script>
+  navList(12);
+</script>
+
+</body>
+</html>

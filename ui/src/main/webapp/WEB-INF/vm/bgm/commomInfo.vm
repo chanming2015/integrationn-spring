@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>业务运营管理系统</title>
+	#parse("bgm/include.vm")
+	<link rel="stylesheet" type="text/css" href="$template_url/admin/css/css.css" />
+</head>
+
+<body>
+	<div class="divMain">
+		<div class="divMain_chaxun">
+			<div class="divMain_add_bt line_botoom">$!{menu.entityBean.name}信息</div>
+			<div class="divMain_xq_all line_botoom">
+	            #foreach($field in $!menu.entityBean.fields)
+	            <div class="divMain_xq_allOne">
+	            	<div class="divMain_xq_allOne_L">*&nbsp;$field.name：</div>
+	            	<div class="divMain_xq_allOne_R">#evaluate("\$!entity.$field.field")</div>
+	            </div>
+	            #end
+			</div>
+			        
+	        <div class="divMain_fenye">
+	        	<div class="divMain_fenyeL">
+	        		<a href="javascript:history.go(-1);" class="anniu_hui100">返回</a>
+	        	</div>
+	        </div>
+		</div>
+	</div>
+</body>
+</html>

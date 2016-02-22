@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>业务运营管理系统</title>
+	#parse("bgm/include.vm")
+	<link rel="stylesheet" type="text/css" href="$template_url/admin/css/css.css" />
+	<script type="text/javascript" src="$template_url/admin/js/My97DatePicker/WdatePicker.js"></script>	
+</head>
+
+<body>
+	<div class="divMain">
+	    <form  action="$!bgm_url/list/$!menu.id" method="post" id="queryForm">
+			<div class="divMain_chaxun">
+		    	<div class="divMain_chaxun_bt line_botoom">$!menu.name</div>	<!-- 标题  -->
+		        <div class="divMain_chaxun_m">									<!-- 查询条件  -->
+			        #foreach($filterField in $!menu.filterFields)
+			        <div class="divMain_chaxun_mOne">
+			        	$!filterField.name ：
+			        	#if($!$filterField.mapSupport)
+							<select name="status" class="select100">
+					      		<option value="">请选择</option>
+								##foreach($statusKey in $!Map_Project_Status.keySet())
+								<option value="$statusKey" #if($statusKey == $!Entity_Search.status) selected="selected" #end>
+									$!Map_Project_Status.get($statusKey)
+								</option>
+								##end
+							</select>
+					    #else
+					    	#if($!filterField.filterBound)
+					    		#if($!filterField.dataType == "Date")
+					    		<input id="$!{filterField.name}Head" name="$!{filterField.name}Head" value='$!parameterMap.get("$!{filterField.name}Head")[0]' onfocus="WdatePicker({isShowClear:false,readOnly:true,maxDate:'#F{$dp.$D(\'$!{filterField.name}Tail\')}'})" type="text" class="select100" />
+					    		<input id="$!{filterField.name}Tail" name="$!{filterField.name}Tail" value='$!parameterMap.get("$!{filterField.name}Tail")[0]' onfocus="WdatePicker({isShowClear:false,readOnly:true,minDate:'#F{$dp.$D(\'$!{filterField.name}Head\')}'})" type="text" class="select100" />
+					    		#else
+					    		<input name="$!{filterField.name}Head" value='$!parameterMap.get("$!{filterField.name}Head")[0]' maxlength="100" type="text" class="text100" />
+					    		~
+					    		<input name="$!{filterField.name}Tail" value='$!parameterMap.get("$!{filterField.name}Tail")[0]' maxlength="100" type="text" class="text100" />
+					    		#end
+					    	#else
+					    		#if($!filterField.dataType == "Date")
+					    			<input name="$!filterField.name" value='$!parameterMap.get($!filterField.name)[0]' onfocus="WdatePicker({isShowClear:false,readOnly:true})" type="text" class="select100" />
+					    		#else
+					    			<input name="$!filterField.name" value='$!parameterMap.get($!filterField.name)[0]' maxlength="100" type="text" class="text100" />
+					    		#end
+					    	#end
+					    #end
+			        </div>
+				    #end
+		        	
+		        	<div class="divMain_chaxun_mOne">用户姓名：<input name="" type="text" class="text100"></div>
+		        	<div class="divMain_chaxun_mOne">真实姓名：<input name="" type="text" class="text100"></div>
+		        	<div class="divMain_chaxun_mOne">客户编号：<input name="" type="text" class="text100"></div>
+		        	<div class="divMain_chaxun_mOne">支付账号：<input name="" type="text" class="text100"></div>
+		        	<div class="divMain_chaxun_mOne">选择状态：<select name="" class="select100"><option>==请选择==</option><option>全部</option></select></div>
+		        	<div class="divMain_chaxun_mOne">时间区间：<input name="idValidTo" id="idValidTo" onfocus="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd'})" type="text" class="text100" /><input type="hidden" name="idValidTo" id="idValidToSure" disabled="disabled" />—<input name="idValidTo2" id="idValidTo2" onfocus="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd'})" type="text" class="text100" /><input type="hidden" name="idValidTo2" id="idValidTo2Sure" disabled="disabled" /></div>
+		        	
+		        	<div class="divMain_chaxun_mAnniu"><input type="submit" value="查 询" class="anniu_blue"></div>
+		        </div>
+		    </div>
+	    </form>
+
+
+		<div class="divMain_chaxun">
+	    	<div class="divMain_liebiao_bt line_botoom">
+	    		#set($atomCellCnt = 0)
+		    	#if($!menu.viewFields.size() > 0)
+		    		#foreach($viewField in $menu.viewFields)
+		    			#set($atomCellCnt = $atomCellCnt + $viewField.viewSpan)
+		    		#end
+		    		#set($atomCellCnt = $atomCellCnt + 2)	## "操作"一栏占两个基本单位
+					#set($atomCellWidth = 99 / $atomCellCnt)
+				#end
+	        	<span class="divMain_liebiao_one01" style="width:1%;">&nbsp;</span>
+	        	#foreach($viewField in $menu.viewFields)
+		        	#set($cWidth = $atomCellWidth * $viewField.viewSpan)
+				    <span class="divMain_liebiao_one01" style="width:$!{cWidth}%;">$!viewField.name</span>
+			    #end
+			    #set($cWidth = $atomCellWidth * 2)
+			    <span class="divMain_liebiao_one01" style="width:$!{cWidth}%;">操作</span>
+	        </div>
+	        
+        	#if($pager.elements.size()>0)
+				#foreach($item in $pager.elements)
+				<div class="divMain_liebiao_all line_botoom">
+					<span class="divMain_liebiao_one01" style="width:1%;">&nbsp;</span>
+					#foreach($viewField in $!menu.viewFields)
+					#set($cWidth = $atomCellWidth * $viewField.viewSpan)
+					<span class="divMain_liebiao_all01" style="width:$!{cWidth}%;">#evaluate("\$item.$viewField.field")</span>
+			    	#end
+			    	#set($cWidth = $atomCellWidth * 2)
+			    	<span class="divMain_liebiao_all01" style="width:$!{cWidth}%;">
+			    		<a href="$!bgm_url/info/$!menu.id/$!item.id">详情</a>
+			    		#if($menu.deleteSupport)<a href="#">| 删除</a>#end
+			    		#if($menu.updateSupport)<a href="#">| 修改</a>#end
+			    		#if($menu.functions)
+			    			#foreach($function in $menu.functions)
+			    				<a href="$function.action">| $function.name</a>
+			    			#end
+			    		#end
+			    	</span>
+				</div>
+				#end
+			#else
+				<div class="divNone line_botoom">暂无信息</div>
+			#end   
+	        
+	        
+	        <div class="divMain_fenye">
+	        	#if($!menu.addSupport)
+	        		<div class="divMain_fenyeL"><a href="$!bgm_url/add/$!menu.id" class="anniu_blue">添加</a></div>
+				#end
+				
+				<div class="divMain_fenyeR">
+					#set($startRow = $!pager.startRow + 1)
+					#if($!pager.endRow < $!pager.totalRows)
+						#set($endRow = $!pager.endRow + 1)
+					#else
+				    	#set($endRow = $!pager.totalRows)
+					#end
+				 	显示第  $!startRow - $!endRow 条记录，共 $!pager.totalRows 记录 &nbsp;&nbsp;&nbsp;
+				 	#if($!pager.currentPage > 1)
+					 	<a href="javascript:page(1);" class="on">首页</a>&nbsp;
+					 	|&nbsp;<a href="javascript:page($!{pager.currentPage}-1);">上一页</a>
+				 	#else
+						首页 &nbsp;
+						|&nbsp;上一页
+					#end
+					#if($!pager.currentPage<$!pager.totalPages)
+						|<a href="javascript:page($!{pager.currentPage}+1);">下一页</a>
+						|<a href="javascript:page($!{pager.totalPages});">尾页</a>
+					#else
+						|下一页 
+						|尾页
+					#end
+				 	
+				 	|<input name="gotoPage" id="gotoPage" size="1" maxlength="3" type="text" class="text40">
+				 	<input type="button" onclick="javascript:gotoPage();" class="anniu_hui" value="跳转">
+				 	<script>
+					 	function page(num) {
+							$("#queryForm").attr("action", 
+												$("#queryForm").attr("action") + "?totalRows=$!pager.totalRows&currentPage=" + num).submit();
+						}
+					 	function gotoPage(){
+							var gotoPage = $('#gotoPage');
+							var pageNum = gotoPage.val();
+							if(!pageNum || /\d*/.exec(pageNum) != pageNum || pageNum < 1 || pageNum > $!{pager.totalPages}){
+								alert('请输入页码！(1~' + $!{pager.totalPages} + ')');
+								gotoPage.focus();
+							}else{
+								page(pageNum);
+							}
+						}
+					</script>
+				 </div>
+	        </div>
+	    </div>
+	</div>
+</body>
+</html>

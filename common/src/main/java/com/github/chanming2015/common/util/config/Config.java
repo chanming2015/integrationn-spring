@@ -13,16 +13,19 @@ import java.util.Properties;
  * Description: 获取config.properties配置文件内容
  * Version:1.0.0
  */
-public class Config {
-	
-	private static final String resource = "config.properties";
-	private static final Properties props = PropertiesUtil.get(resource, "utf-8");
-	
-	public static String getProperty(String name, String defValue) {
-		return props.getProperty(name, defValue);
-	}
-	
-	public static String getProperty(String name) {
-		return props.getProperty(name);
-	}
+public class Config
+{
+
+    private static final String resource = "config.properties";
+    private static final Properties props = PropertiesUtil.get(resource);
+
+    public static String getProperty(String name, String defValue)
+    {
+        return props.getProperty(name, defValue);
+    }
+
+    public static String getProperty(String name)
+    {
+        return props.getProperty(name);
+    }
 }

@@ -30,7 +30,7 @@ public class InvokeUtil
      */
     private static Method getGetMethod(Class<?> cls, String fieldName)
     {
-        StringBuffer sb = new StringBuffer("get");
+        StringBuilder sb = new StringBuilder("get");
         sb.append(fieldName.substring(0, 1).toUpperCase(Locale.US));
         sb.append(fieldName.substring(1));
         try
@@ -63,7 +63,7 @@ public class InvokeUtil
         {
             Field field = cls.getDeclaredField(fieldName);
             parameterTypes[0] = field.getType();
-            StringBuffer sb = new StringBuffer("set");
+            StringBuilder sb = new StringBuilder("set");
             sb.append(fieldName.substring(0, 1).toUpperCase(Locale.US));
             sb.append(fieldName.substring(1));
             return cls.getMethod(sb.toString(), parameterTypes);

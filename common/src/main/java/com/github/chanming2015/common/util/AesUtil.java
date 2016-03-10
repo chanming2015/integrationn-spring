@@ -240,17 +240,4 @@ public class AesUtil
 
         return sb.toString();
     }
-
-    public static void main(String[] args)
-    {
-        String key = randomString(64);
-
-        System.out.println(key);
-
-        String content = "admin";
-        String miwen = encryptAesString(key, content);
-        System.out.println(miwen);
-
-        System.out.println(decryptAesString(key, miwen));
-    }
 }

@@ -21,20 +21,47 @@ public class DateUtil
     /**
      * yyyy-MM-dd
      */
-    private static final SimpleDateFormat day = new SimpleDateFormat(
-            "yyyy-MM-dd");
+    private static final ThreadLocal<SimpleDateFormat> day = new ThreadLocal<SimpleDateFormat>()
+    {
+
+        @Override
+        protected SimpleDateFormat initialValue()
+        {
+
+            return new SimpleDateFormat("yyyy-MM-dd");
+        }
+
+    };
 
     /**
      * yyyy-MM-dd HH:mm:ss
      */
-    private static final SimpleDateFormat dayTime = new SimpleDateFormat(
-            "yyyy-MM-dd HH:mm:ss");
+    private static final ThreadLocal<SimpleDateFormat> dayTime = new ThreadLocal<SimpleDateFormat>()
+    {
+
+        @Override
+        protected SimpleDateFormat initialValue()
+        {
+
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+
+    };
 
     /**
      * yyMMddHHmmss
      */
-    private static final SimpleDateFormat smallMicroSeconds = new SimpleDateFormat(
-            "yyMMddHHmmss");
+    private static final ThreadLocal<SimpleDateFormat> smallMicroSeconds = new ThreadLocal<SimpleDateFormat>()
+    {
+
+        @Override
+        protected SimpleDateFormat initialValue()
+        {
+
+            return new SimpleDateFormat("yyMMddHHmmss");
+        }
+
+    };
 
     public static enum FormatType
     {
@@ -55,7 +82,7 @@ public class DateUtil
 
         try
         {
-            return dayTime.parse(time);
+            return dayTime.get().parse(time);
         }
         catch (Exception e)
         {
@@ -63,7 +90,7 @@ public class DateUtil
 
         try
         {
-            return day.parse(time);
+            return day.get().parse(time);
         }
         catch (Exception e)
         {
@@ -81,11 +108,11 @@ public class DateUtil
         switch (type)
         {
         case DAY:
-            return day.format(date);
+            return day.get().format(date);
         case DAYTIME:
-            return dayTime.format(date);
+            return dayTime.get().format(date);
         case SMALLMICROSECONDS:
-            return smallMicroSeconds.format(date);
+            return smallMicroSeconds.get().format(date);
         }
         return null;
     }

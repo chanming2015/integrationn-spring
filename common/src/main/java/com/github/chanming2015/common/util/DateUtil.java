@@ -1,8 +1,13 @@
 package com.github.chanming2015.common.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Project:common
@@ -18,6 +23,8 @@ import java.util.Date;
 public class DateUtil
 {
 
+    private static final Logger log = LoggerFactory.getLogger(DateUtil.class);
+
     /**
      * yyyy-MM-dd
      */
@@ -28,7 +35,7 @@ public class DateUtil
         protected SimpleDateFormat initialValue()
         {
 
-            return new SimpleDateFormat("yyyy-MM-dd");
+            return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         }
 
     };
@@ -43,7 +50,7 @@ public class DateUtil
         protected SimpleDateFormat initialValue()
         {
 
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         }
 
     };
@@ -58,7 +65,7 @@ public class DateUtil
         protected SimpleDateFormat initialValue()
         {
 
-            return new SimpleDateFormat("yyMMddHHmmss");
+            return new SimpleDateFormat("yyMMddHHmmss", Locale.US);
         }
 
     };
@@ -73,27 +80,28 @@ public class DateUtil
         SMALLMICROSECONDS
     };
 
-    public static Date parse(String time)
+    public static Date parse(String time, FormatType type)
     {
-        if (time == null || time.isEmpty())
+        if (EmptyUtil.isEmpty(time))
         {
             return null;
         }
 
         try
         {
-            return dayTime.get().parse(time);
+            switch (type)
+            {
+            case DAY:
+                return day.get().parse(time);
+            case DAYTIME:
+                return dayTime.get().parse(time);
+            case SMALLMICROSECONDS:
+                return smallMicroSeconds.get().parse(time);
+            }
         }
-        catch (Exception e)
+        catch (ParseException e)
         {
-        }
-
-        try
-        {
-            return day.get().parse(time);
-        }
-        catch (Exception e)
-        {
+            log.error(time + " ParseException");
         }
 
         return null;

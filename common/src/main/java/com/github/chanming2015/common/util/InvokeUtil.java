@@ -93,26 +93,30 @@ public class InvokeUtil
      */
     public static Object invokeGet(Object obj, String fieldName)
     {
-        Method method = getGetMethod(obj.getClass(), fieldName);
-        try
+        if (!EmptyUtil.isNull(obj, fieldName))
         {
-            if (method != null)
+            Method method = getGetMethod(obj.getClass(), fieldName);
+            try
             {
-                return method.invoke(obj, new Object[0]);
+                if (method != null)
+                {
+                    return method.invoke(obj, new Object[0]);
+                }
+            }
+            catch (IllegalAccessException e)
+            {
+                log.error("invokeGet IllegalAccessException", e);
+            }
+            catch (IllegalArgumentException e)
+            {
+                log.error("invokeGet IllegalArgumentException", e);
+            }
+            catch (InvocationTargetException e)
+            {
+                log.error("invokeGet InvocationTargetException", e);
             }
         }
-        catch (IllegalAccessException e)
-        {
-            log.error("invokeGet IllegalAccessException", e);
-        }
-        catch (IllegalArgumentException e)
-        {
-            log.error("invokeGet IllegalArgumentException", e);
-        }
-        catch (InvocationTargetException e)
-        {
-            log.error("invokeGet InvocationTargetException", e);
-        }
+
         return null;
     }
 
@@ -126,25 +130,28 @@ public class InvokeUtil
      */
     public static void invokeSet(Object obj, String fieldName, Object value)
     {
-        Method method = getSetMethod(obj.getClass(), fieldName);
-        try
+        if (!EmptyUtil.isNull(obj, fieldName, value))
         {
-            if (method != null)
+            Method method = getSetMethod(obj.getClass(), fieldName);
+            try
             {
-                method.invoke(obj, value);
+                if (method != null)
+                {
+                    method.invoke(obj, value);
+                }
             }
-        }
-        catch (IllegalAccessException e)
-        {
-            log.error("invokeSet IllegalAccessException", e);
-        }
-        catch (IllegalArgumentException e)
-        {
-            log.error("invokeSet IllegalArgumentException", e);
-        }
-        catch (InvocationTargetException e)
-        {
-            log.error("invokeSet InvocationTargetException", e);
+            catch (IllegalAccessException e)
+            {
+                log.error("invokeSet IllegalAccessException", e);
+            }
+            catch (IllegalArgumentException e)
+            {
+                log.error("invokeSet IllegalArgumentException", e);
+            }
+            catch (InvocationTargetException e)
+            {
+                log.error("invokeSet InvocationTargetException", e);
+            }
         }
     }
 
@@ -211,8 +218,4 @@ public class InvokeUtil
         return fieldSetList;
     }
 
-    public static void main(String[] args)
-    {
-        getFieldList(Integer.class);
-    }
 }

@@ -10,6 +10,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,13 +24,12 @@ import org.slf4j.LoggerFactory;
  * @author XuMaoSen
  * Version:1.0.0
  */
-public class AesUtil
+public class SecurityUtil
 {
-    private static final Logger log = LoggerFactory.getLogger(AesUtil.class);
+    private static final Logger log = LoggerFactory
+            .getLogger(SecurityUtil.class);
 
-    private static final String ALGORITHM = "AES";
-
-    private static final String CHARSET = "utf-8";
+    private static final String CHARSET_UTF_8 = "utf-8";
 
     /**
      * Description: AES加密
@@ -56,7 +56,7 @@ public class AesUtil
     {
         try
         {
-            return new String(decryptAes(keyString, content), CHARSET);
+            return new String(decryptAes(keyString, content), CHARSET_UTF_8);
         }
         catch (UnsupportedEncodingException e)
         {
@@ -76,8 +76,8 @@ public class AesUtil
     {
         try
         {
-            byte[] byteKey = keyString.getBytes(CHARSET);
-            byte[] byteContent = content.getBytes(CHARSET);
+            byte[] byteKey = keyString.getBytes(CHARSET_UTF_8);
+            byte[] byteContent = content.getBytes(CHARSET_UTF_8);
 
             return doAes(byteKey, byteContent, true);
         }
@@ -99,7 +99,7 @@ public class AesUtil
     {
         try
         {
-            byte[] byteKey = keyString.getBytes(CHARSET);
+            byte[] byteKey = keyString.getBytes(CHARSET_UTF_8);
             byte[] byteContent = parseHexStr2Byte(content);
 
             return doAes(byteKey, byteContent, false);
@@ -124,14 +124,15 @@ public class AesUtil
         try
         {
             // 1.生成加密密钥
-            KeyGenerator kgen = KeyGenerator.getInstance(ALGORITHM);
+            KeyGenerator kgen = KeyGenerator.getInstance("AES");
             kgen.init(128, new SecureRandom(byteKey));
             SecretKey secretKey = kgen.generateKey();
             byte[] enCodeFormart = secretKey.getEncoded();
-            SecretKeySpec key = new SecretKeySpec(enCodeFormart, ALGORITHM);
+            SecretKeySpec key = new SecretKeySpec(enCodeFormart,
+                    secretKey.getAlgorithm());
 
             // 2.创建密码器
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            Cipher cipher = Cipher.getInstance(secretKey.getAlgorithm());
 
             // 3.初始化
             if (flag)
@@ -166,6 +167,71 @@ public class AesUtil
         catch (BadPaddingException e)
         {
             log.error("doAes BadPaddingException", e);
+        }
+
+        return new byte[0];
+    }
+
+    /**
+     * Description: HMAC加密
+     * Create Date:2016年4月9日
+     * @author XuMaoSen
+     * @param keyString 加密密钥
+     * @param content 待加密内容
+     * @return 16进制字符串(密文)
+     */
+    public static String encryptHMACString(String keyString, String content)
+    {
+        return parseByte2HexStr(encryptHMAC(keyString, content));
+    }
+
+    /**
+     * Description: HMAC加密
+     * Create Date:2016年4月9日
+     * @author XuMaoSen
+     * @param keyString 密钥
+     * @param content 待加密内容
+     */
+    public static byte[] encryptHMAC(String keyString, String content)
+    {
+        try
+        {
+            byte[] byteKey = keyString.getBytes(CHARSET_UTF_8);
+            byte[] byteContent = content.getBytes(CHARSET_UTF_8);
+
+            return encryptHMAC(byteKey, byteContent);
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            log.error("encryptHMAC UnsupportedEncodingException", e);
+        }
+        return new byte[0];
+    }
+
+    /**
+     * Description: 执行HMAC加密
+     * Create Date:2016年4月9日
+     * @author XuMaoSen
+     * @param byteKey 密钥
+     * @param byteContent 待加密内容
+     */
+    private static byte[] encryptHMAC(byte[] byteKey, byte[] byteContent)
+    {
+        SecretKey key = new SecretKeySpec(byteKey, "HmacMD5");
+        try
+        {
+            Mac mac = Mac.getInstance(key.getAlgorithm());
+            mac.init(key);
+
+            return mac.doFinal(byteContent);
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            log.error("encryptHMAC NoSuchAlgorithmException");
+        }
+        catch (InvalidKeyException e)
+        {
+            log.error("encryptHMAC InvalidKeyException");
         }
 
         return new byte[0];

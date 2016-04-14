@@ -1,5 +1,6 @@
 package com.github.chanming2015.common.util.access;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,9 +14,10 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -47,20 +49,7 @@ public class HttpAccessUtil
     {
         HttpGet httpGet = new HttpGet(url);
 
-        if (head != null)
-        {
-            for (Entry<String, String> entry : head.entrySet())
-            {
-                httpGet.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-
-        if (config != null)
-        {
-            httpGet.setConfig(config);
-        }
-
-        return excute(httpGet);
+        return excute(head, config, httpGet);
     }
 
     /**
@@ -76,20 +65,7 @@ public class HttpAccessUtil
     {
         HttpDelete httpDelete = new HttpDelete(url);
 
-        if (head != null)
-        {
-            for (Entry<String, String> entry : head.entrySet())
-            {
-                httpDelete.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-
-        if (config != null)
-        {
-            httpDelete.setConfig(config);
-        }
-
-        return excute(httpDelete);
+        return excute(head, config, httpDelete);
     }
 
     /**
@@ -106,26 +82,13 @@ public class HttpAccessUtil
     {
         HttpPost httpPost = new HttpPost(url);
 
-        if (head != null)
-        {
-            for (Entry<String, String> entry : head.entrySet())
-            {
-                httpPost.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-
-        if (config != null)
-        {
-            httpPost.setConfig(config);
-        }
-
         if (jsonData != null)
         {
             httpPost.setEntity(new StringEntity(jsonData,
                     ContentType.APPLICATION_JSON));
         }
 
-        return excute(httpPost);
+        return excute(head, config, httpPost);
     }
 
     /**
@@ -142,36 +105,67 @@ public class HttpAccessUtil
     {
         HttpPut httpPut = new HttpPut(url);
 
-        if (head != null)
-        {
-            for (Entry<String, String> entry : head.entrySet())
-            {
-                httpPut.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-
-        if (config != null)
-        {
-            httpPut.setConfig(config);
-        }
-
         if (jsonData != null)
         {
             httpPut.setEntity(new StringEntity(jsonData,
                     ContentType.APPLICATION_JSON));
         }
 
-        return excute(httpPut);
+        return excute(head, config, httpPut);
+    }
+
+    /**
+     * Description: 执行HTTP-PUT请求
+     * @param url 请求地址
+     * @param files 文件集合
+     * @param head 请求头部信息
+     * @param config 超时设置
+     * Create Date:2016年4月8日
+     * @author XuMaoSen
+     */
+    public static String putMultipart(String url, Map<String, String> head,
+            Map<String, File> files, RequestConfig config)
+    {
+        HttpPut httpPut = new HttpPut(url);
+
+        if (files != null)
+        {
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            for (Entry<String, File> entry : files.entrySet())
+            {
+                builder.addBinaryBody(entry.getKey(), entry.getValue());
+            }
+            httpPut.setEntity(builder.build());
+        }
+
+        return excute(head, config, httpPut);
     }
 
     /**
      * Description: 执行HTTP请求
+     * @param head 请求头部信息
+     * @param config 超时设置
      * Create Date:2016年4月8日
      * @author XuMaoSen
      */
-    private static String excute(HttpUriRequest request)
+    private static String excute(Map<String, String> head,
+            RequestConfig config, HttpRequestBase request)
     {
         String result = null;
+
+        if (head != null)
+        {
+            for (Entry<String, String> entry : head.entrySet())
+            {
+                request.addHeader(entry.getKey(), entry.getValue());
+            }
+        }
+
+        if (config != null)
+        {
+            request.setConfig(config);
+        }
+
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try
         {

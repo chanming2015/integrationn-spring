@@ -5,245 +5,322 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Project:common
- * Package:com.github.chanming2015.common.util.config
- * FileName:TaskUtil.java
- * Comments:
- * JDK Version:
+ * Description: 执行单次任务或定时任务工具类
+ * Create Date:2016年4月18日
  * @author XuMaoSen
- * Create Date:2015年12月4日 下午9:06:23
- * Description:
- * 执行单次任务或定时任务工具类（用于减少new Thread()和new Timer()的使用）
  * Version:1.0.0
  */
-public class TaskUtil {
-	private static final Logger logger = LoggerFactory.getLogger(TaskUtil.class);
-	private static ExecutorService cachedExecutor = null;
-	private static ScheduledExecutorService scheduledExecutor = null;
-	private static Map<Runnable, Future<?>> keepRunningTasks = null;
-	private static Map<Future<?>, Callback> callbackdTasks = null;
-	static {
-		cachedExecutor = Executors.newCachedThreadPool(new TaskUtilThreadFactory("cached"));
-		scheduledExecutor = Executors.newSingleThreadScheduledExecutor(new TaskUtilThreadFactory("scheduled"));
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				TaskUtil.shutdown();
-			}
-		});
-	}
-	
-	/**
-	 * 关闭TaskUtil，通常情况下不必手动调用
-	 */
-	public static void shutdown() {
-		scheduledExecutor.shutdown();
-		cachedExecutor.shutdown();
-		if(!scheduledExecutor.isTerminated()) scheduledExecutor.shutdownNow();
-		if(!cachedExecutor.isTerminated()) scheduledExecutor.shutdownNow();
-		logger.info("TaskUtil executors shutdown.");
-	}
+public class TaskUtil
+{
+    private static final Logger logger = LoggerFactory.getLogger(TaskUtil.class);
 
-	/**
-	 * 立即执行任务
-	 */
-	public static Future<?> submit(Runnable task) {
-		return cachedExecutor.submit(task);
-	}
-	
-	/**
-	 * 自动保持任务持续运行，每分钟监视一次
-	 */
-	public static Future<?> submitKeepRunning(Runnable task){
-		Future<?> future = submit(task);
-		checkInitCachedTasks();
-		synchronized (keepRunningTasks) {
-			keepRunningTasks.put(task, future);
-		}
-		return future;
-	}
-	
-	/**
-	 * 延迟执行任务，例如延迟5秒：schedule(task,5,TimeUnit.SECONDS)
-	 */
-	public static void schedule(Runnable task, long delay, TimeUnit unit) {
-		scheduledExecutor.schedule(new ScheduleTask(task), delay, unit);
-	}
-	
-	/**
-	 * 定时执行任务一次，比如下午两点：scheduleAt(task, DateUtils.setHours(new Date(), 13))
-	 */
-	public static void scheduleAt(Runnable task, Date time) {
-		long mills = time.getTime() - System.currentTimeMillis();
-		schedule(task, mills>0 ? mills : 3, TimeUnit.MILLISECONDS);
-	}
-	
-	/**
-	 * 定时重复执行任务，比如延迟5秒，每10分钟执行一次：scheduleAtFixRate(task, 5, TimeUnit.MINUTES.toSeconds(10), TimeUnit.SECONDS)
-	 */
-	public static void scheduleAtFixedRate(Runnable task, long initialDelay, long delay, TimeUnit unit) {
-		scheduledExecutor.scheduleWithFixedDelay(new ScheduleTask(task), initialDelay, delay, unit);
-	}
-	
-	/**
-	 * 定时重复执行任务，比如下午两点开始，每小时执行一次：scheduleAtFixRate(task, DateUtils.setHours(new Date(), 13), 1, TimeUnit.HOURS)
-	 */
-	public static void scheduleAtFixtRate(Runnable task, Date time, long delay, TimeUnit unit) {
-		long mills = time.getTime() - System.currentTimeMillis();
-		scheduleAtFixedRate(task, mills>0 ? mills : 3, unit.toMillis(delay), TimeUnit.MILLISECONDS);
-	}
-	
-	/**
-	 * 提交带返回值的任务，支持后续处理
-	 */
-	public static <T> Future<T> submit(Callable<T> task) {
-		return cachedExecutor.submit(task);
-	}
-	
-	/**
-	 * 提交带返回值的任务，支持后续处理
-	 */
-	public static <T> Future<T> submit(Callable<T> task, Callback callback) {
-		Future<T> future = submit(task);
-		checkInitCachedTasks();
-		if(callback != null) {
-			synchronized (callbackdTasks) {
-				callbackdTasks.put(future, callback);
-			}
-		}
-		return future;
-	}
-	
-	/**
-	 * 提交任务，等待返回值
-	 */
-	public static <T> T wait(Callable<T> task) {
-		Future<T> future = cachedExecutor.submit(task);
-		try {
-			return future.get();
-		} catch (Exception e) {
-			logger.warn(e.getMessage());
-			return null;
-		}
-	}
-	
-	private static void checkInitCachedTasks() {
-		if(keepRunningTasks != null) return;
-		
-		keepRunningTasks = new HashMap<Runnable, Future<?>>();
-		callbackdTasks = new HashMap<Future<?>, Callback>();
-		scheduleAtFixedRate(new CachedTasksMonitor(), 1, 1, TimeUnit.MINUTES);
-	}
-	
-	/**
-	 * 监视需要保持运行的任务
-	 */
-	private static class CachedTasksMonitor implements Runnable {
-		public void run() {
-			if(keepRunningTasks.size() > 0) {
-				synchronized (keepRunningTasks) {
-					Map<Runnable, Future<?>> tempTasks = null;
-					for(Runnable task : keepRunningTasks.keySet()) {
-						Future<?> future = keepRunningTasks.get(task);
-						if(future.isDone()) {
-							future = submit(task);//恢复运行结束任务
-							if(tempTasks == null) tempTasks = new HashMap<Runnable, Future<?>>();
-							tempTasks.put(task, future);
-						}
-					}
-					if(tempTasks != null && tempTasks.size() > 0) keepRunningTasks.putAll(tempTasks);
-				}
-			}
-			
-			if(callbackdTasks.size() > 0) {
-				synchronized (callbackdTasks) {
-					List<Future<?>> callbackedFutures = null;
-					for(Future<?> future : callbackdTasks.keySet()) {
-						final Callback callback = callbackdTasks.get(future);
-						if(future.isDone()) {
-							try{
-								final Object result = future.get(5, TimeUnit.SECONDS);
-								submit(new Runnable() {
-									public void run() {
-										callback.handle(result);
-									}
-								});
-								if(callbackedFutures == null) callbackedFutures = new LinkedList<Future<?>>();
-								callbackedFutures.add(future);
-							}catch (Exception e) {
-								logger.warn("TaskUtil callbackedTasks warn: ", e);
-							}
-						}
-					}
-					
-					if(callbackedFutures != null && callbackedFutures.size() > 0) {
-						for(Future<?> future : callbackedFutures) {
-							callbackdTasks.remove(future);
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * 自定义线程名称Task-idx-name-idx2
-	 */
-	private static class TaskUtilThreadFactory implements ThreadFactory {
-		private final static AtomicInteger taskutilThreadNumber = new AtomicInteger(1);
-		private final String threadNamePrefix;
-		TaskUtilThreadFactory(String threadNamePrefix){
-			this.threadNamePrefix = threadNamePrefix;
-		}
-		
-		public Thread newThread(Runnable r) {
-			Thread t = new Thread(r, String.format("TaskUtil-%d-%s", taskutilThreadNumber.getAndIncrement(), this.threadNamePrefix));
-		    t.setDaemon(true);
-		    t.setPriority(Thread.MIN_PRIORITY);
-			return t;
-		}
-	}
-	
-	/**
-	 * Project:common
-	 * Package:com.github.chanming2015.common.util.config
-	 * FileName:TaskUtil.java
-	 * Comments:
-	 * JDK Version:
-	 * @author XuMaoSen
-	 * Create Date:2015年12月4日 下午9:14:04
-	 * Description:
-	 * 封装定时任务，每次调度时使用cached thread运行，基本不占用调度执行时间
-	 * Version:1.0.0
-	 */
-	private static class ScheduleTask implements Runnable {
-		private Runnable runner;
-		public ScheduleTask(Runnable runnable) {
-			this.runner = runnable;
-		}
-		@Override
-		public void run() {
-			TaskUtil.submit(runner);
-		}
-	}
-	
-	/**
-	 * 等待结果回调接口
-	 */
-	public static interface Callback {
-		void handle(Object result);
-	}
+    private static ExecutorService cachedExecutor = null;
+    private static ScheduledExecutorService scheduledExecutor = null;
+    private static Map<Runnable, Future<?>> keepRunningTasks = null;
+    private static Map<Future<?>, CallBack> callbackdTasks = null;
+
+    static
+    {
+        // 创建一个缓存线程池（立即执行）
+        cachedExecutor = Executors.newCachedThreadPool(new TaskUtilThreadFactory("cached"));
+        // 创建一个单一线程的线程池（延迟执行）
+        scheduledExecutor = Executors.newSingleThreadScheduledExecutor(new TaskUtilThreadFactory(
+                "scheduled"));
+        // 线程池随虚拟机关闭
+        Runtime.getRuntime().addShutdownHook(new Thread()
+        {
+            @Override
+            public void run()
+            {
+                TaskUtil.shutdown();
+            }
+        });
+
+        logger.info("TaskUtil inited");
+    }
+
+    /**
+     * Description: 关闭线程池，通常情况下不必手动调用
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     */
+    public static void shutdown()
+    {
+        scheduledExecutor.shutdown();
+        cachedExecutor.shutdown();
+        if (!scheduledExecutor.isTerminated())
+        {
+            scheduledExecutor.shutdownNow();
+        }
+        if (!cachedExecutor.isTerminated())
+        {
+            scheduledExecutor.shutdownNow();
+        }
+        logger.info("TaskUtil executors shutdown.");
+    }
+
+    /*
+     * ****************** 立即执行任务 *****************************
+     */
+
+    /**
+     * Description: 提交任务，获取返回值（非线程阻塞）
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     */
+    public static Future<?> submit(Runnable task)
+    {
+        return cachedExecutor.submit(task);
+    }
+
+    /**
+     * Description: 提交任务，获取返回值（非线程阻塞）
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     */
+    public static <T> Future<T> submit(Callable<T> task)
+    {
+        return cachedExecutor.submit(task);
+    }
+
+    /**
+     * Description: 提交任务，等待返回值（线程阻塞，超时等待30秒）
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     */
+    public static <T> T wait(Callable<T> task)
+    {
+        Future<T> future = cachedExecutor.submit(task);
+        try
+        {
+            return future.get(30, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException e)
+        {
+            logger.error("exec wait InterruptedException");
+        }
+        catch (ExecutionException e)
+        {
+            logger.error("exec wait ExecutionException");
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("exec wait TimeoutException");
+        }
+        return null;
+    }
+
+    /*
+     * ****************** 延迟执行任务 *****************************
+     */
+
+    /**
+     * Description: 延迟执行任务一次（线程阻塞）
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     */
+    public static <T> ScheduledFuture<T> schedule(Callable<T> task, long delay, TimeUnit unit)
+    {
+        return scheduledExecutor.schedule(new ScheduleCallable<T>(task), delay, unit);
+    }
+
+    /**
+     * Description: 延迟执行任务一次，例如延迟5秒：schedule(task,5,TimeUnit.SECONDS)
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     */
+    public static ScheduledFuture<?> schedule(Runnable task, long delay, TimeUnit unit)
+    {
+        return scheduledExecutor.schedule(new ScheduleRunnable(task), delay, unit);
+    }
+
+    /**
+     * Description: 定时执行任务一次，比如下午两点：scheduleAt(task, DateUtils.setHours(new Date(), 13))
+     * Create Date:2016年4月19日
+     * @author XuMaoSen
+     */
+    public static ScheduledFuture<?> scheduleAt(Runnable task, Date time)
+    {
+        long mills = time.getTime() - System.currentTimeMillis();
+        return schedule(task, mills > 0 ? mills : 5, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Description: 定时重复执行延迟任务，比如延迟5秒，每10分钟执行一次：scheduleAtFixRate(task, 5, TimeUnit.MINUTES.toSeconds(10), TimeUnit.SECONDS)
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     */
+    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long initialDelay,
+            long delay, TimeUnit unit)
+    {
+        return scheduledExecutor.scheduleWithFixedDelay(new ScheduleRunnable(task), initialDelay,
+                delay, unit);
+    }
+
+    /**
+     * Description: 定时重复执行任务，比如下午两点开始，每小时执行一次：scheduleAtFixRate(task, DateUtils.setHours(new Date(), 13), 1, TimeUnit.HOURS) 
+     * Create Date:2016年4月19日
+     * @author XuMaoSen
+     */
+    public static ScheduledFuture<?> scheduleAtFixtRate(Runnable task, Date time, long delay,
+            TimeUnit unit)
+    {
+        long mills = time.getTime() - System.currentTimeMillis();
+        return scheduleAtFixedRate(task, mills > 0 ? mills : 3, unit.toMillis(delay),
+                TimeUnit.MILLISECONDS);
+    }
+
+    private static void checkInitCachedTasks()
+    {
+        if (keepRunningTasks != null)
+        {
+            return;
+        }
+
+        keepRunningTasks = new HashMap<Runnable, Future<?>>();
+        callbackdTasks = new HashMap<Future<?>, CallBack>();
+        scheduleAtFixedRate(new CachedTasksMonitor(), 1, 1, TimeUnit.MINUTES);
+    }
+
+    /**
+     * Description: 自动保持任务持续运行，每分钟监视一次
+     * Create Date:2016年4月19日
+     * @author XuMaoSen
+     */
+    public static Future<?> submitKeepRunning(Runnable task)
+    {
+        Future<?> future = submit(task);
+        checkInitCachedTasks();
+        synchronized (keepRunningTasks)
+        {
+            keepRunningTasks.put(task, future);
+        }
+        return future;
+    }
+
+    /**
+     * Description: 提交带返回值的任务，支持后续处理
+     * Create Date:2016年4月19日
+     * @author XuMaoSen
+     */
+    public static <T> Future<T> submit(Callable<T> task, CallBack callback)
+    {
+        Future<T> future = submit(task);
+        checkInitCachedTasks();
+        if (callback != null)
+        {
+            synchronized (callbackdTasks)
+            {
+                callbackdTasks.put(future, callback);
+            }
+        }
+        return future;
+    }
+
+    /**
+     * Description: 监视需要保持运行的任务
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     * Version:1.0.0
+     */
+    private static class CachedTasksMonitor implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            if (keepRunningTasks.size() > 0)
+            {
+                synchronized (keepRunningTasks)
+                {
+                    Map<Runnable, Future<?>> tempTasks = new HashMap<Runnable, Future<?>>();
+                    for (Entry<Runnable, Future<?>> entry : keepRunningTasks.entrySet())
+                    {
+                        Runnable task = entry.getKey();
+                        Future<?> future = entry.getValue();
+                        if (future.isDone())
+                        {
+                            future = submit(task);
+                            tempTasks.put(task, future);
+                        }
+                    }
+                    if (tempTasks.size() > 0)
+                    {
+                        keepRunningTasks.putAll(tempTasks);
+                    }
+                }
+            }
+
+            if (callbackdTasks.size() > 0)
+            {
+                synchronized (callbackdTasks)
+                {
+                    List<Future<?>> callbackedFutures = new LinkedList<Future<?>>();
+                    for (Entry<Future<?>, CallBack> entry : callbackdTasks.entrySet())
+                    {
+                        final Future<?> future = entry.getKey();
+                        final CallBack callback = entry.getValue();
+                        if (future.isDone())
+                        {
+                            try
+                            {
+                                final Object result = future.get(5, TimeUnit.SECONDS);
+                                submit(new Runnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        callback.handle(result);
+                                    }
+                                });
+                                callbackedFutures.add(future);
+                            }
+                            catch (InterruptedException e)
+                            {
+                                logger.error("exec wait InterruptedException");
+                            }
+                            catch (ExecutionException e)
+                            {
+                                logger.error("exec wait ExecutionException");
+                            }
+                            catch (TimeoutException e)
+                            {
+                                logger.error("exec wait TimeoutException");
+                            }
+                        }
+                    }
+
+                    for (Future<?> future : callbackedFutures)
+                    {
+                        callbackdTasks.remove(future);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Description: 回调结果处理接口
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     * Version:1.0.0
+     */
+    public static interface CallBack
+    {
+        void handle(Object result);
+    }
 }

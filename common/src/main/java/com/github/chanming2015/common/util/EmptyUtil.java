@@ -32,11 +32,11 @@ public class EmptyUtil
      * Create Date:2016年4月9日
      * @author XuMaoSen
      */
-    public static boolean isEmpty(String... args)
+    public static boolean isEmpty(CharSequence... args)
     {
-        for (String str : args)
+        for (CharSequence str : args)
         {
-            if (str == null || 0 == str.length())
+            if (str == null || str.toString().isEmpty())
             {
                 return true;
             }

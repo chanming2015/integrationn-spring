@@ -1,4 +1,4 @@
-package com.github.chanming2015.common.util.access;
+package com.github.chanming2015.common.util;
 
 import java.io.File;
 import java.io.IOException;

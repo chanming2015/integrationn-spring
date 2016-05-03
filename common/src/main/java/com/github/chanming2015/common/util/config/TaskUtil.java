@@ -181,7 +181,7 @@ public class TaskUtil
             TimeUnit unit)
     {
         long mills = time.getTime() - System.currentTimeMillis();
-        return scheduleAtFixedRate(task, mills > 0 ? mills : 3, unit.toMillis(delay),
+        return scheduleAtFixedRate(task, mills > 0 ? mills : 5, unit.toMillis(delay),
                 TimeUnit.MILLISECONDS);
     }
 

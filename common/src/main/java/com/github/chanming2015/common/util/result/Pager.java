@@ -20,149 +20,180 @@ import java.util.List;
  * @param <T>
  */
 @SuppressWarnings({"serial"})
-public class Pager<T> implements Serializable {
-	private int totalRows = -1;
-	private int pageSize = 30;
-	private int totalPages = 1;
-	private int currentPage = 1;
-	private int pageWindow = 7;//页码窗口
-	private List<T> elements = null;
-	private List<T> others = null;
-	private String direction = null;
-	private String properties = null;
+public class Pager<T> implements Serializable
+{
+    private int totalRows = -1;
+    private int pageSize = 30;
+    private int totalPages = 1;
+    private int currentPage = 1;
+    private int pageWindow = 15;// 页码窗口
+    private List<T> elements = null;
+    private List<T> others = null;
+    private String direction = null;
+    private String properties = null;
 
-	/**
-	 * 未初始化分页，请调用init初始化
-	 */
-	public Pager() {}
-	
-	/**
-	 * 初始化分页，调用page(n)设置页码
-	 */
-	public Pager(int totalRows, int pageSize) {
-		this.pageSize = pageSize;
-		init(totalRows);
-	}
+    /**
+     * 未初始化分页，请调用init初始化
+     */
+    public Pager()
+    {
+    }
 
-	/**
-	 * 初始化
-	 */
-	public void init (int totalRows) {
-		this.totalRows = totalRows > 0 ? totalRows : 0;
-		this.totalPages = pageSize > 0 ? this.totalRows / pageSize + (this.totalRows % pageSize > 0 ? 1 : 0) : (this.totalRows > 0 ? 1 : 0);
-	}
-	
-	/**
-	 * 如果没有初始化，则请初始化
-	 */
-	public boolean notInitialized() {
-		return totalRows == -1;
-	}
-	
-	/**
-	 * 跳转页，从1开始
-	 */
-	public void page(int page) {
-		if(notInitialized() && page>0) currentPage = page;
-		else if(page > 0 && page <= totalPages) currentPage = page;
-	}
-	
-	/**
-	 * 设置需要显示的页码窗口大小，默认10个页码
-	 */
-	public void pageWindow(int pageWindow) {
-		this.pageWindow = pageWindow;
-	}
+    /**
+     * 初始化分页，调用page(n)设置页码
+     */
+    public Pager(int totalRows, int pageSize)
+    {
+        this.pageSize = pageSize;
+        init(totalRows);
+    }
 
-	public int getPageSize() {
-		return pageSize;
-	}
+    /**
+     * 初始化
+     */
+    public void init(int totalRows)
+    {
+        this.totalRows = totalRows > 0 ? totalRows : 0;
+        this.totalPages = pageSize > 0 ? this.totalRows / pageSize
+                + (this.totalRows % pageSize > 0 ? 1 : 0) : (this.totalRows > 0 ? 1 : 0);
+    }
 
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
-	
-	public int getStartRow() {
-		return (currentPage - 1) * pageSize;
-	}
-	
-	public int getEndRow() {
-		return currentPage * pageSize - 1;
-	}
-	
-	public int getStartPage() {
-		int pageMiddle = pageWindow / 2;
-		int startPage = currentPage <= pageMiddle ? 1 : currentPage - pageMiddle;
-		int endPage = startPage + pageWindow -1;
-		endPage = endPage > totalPages ? totalPages : endPage;
-		if(endPage==totalPages && startPage>1 && endPage-startPage<pageWindow-1) {
-			int leftShift1 = pageWindow-(endPage-startPage)-1;
-			int leftShift2 = startPage - 1;
-			startPage -= leftShift1 < leftShift2 ? leftShift1 : leftShift2;
-		}
-		return startPage;
-	}
-	
-	public int getEndPage() {
-		int endPage = getStartPage() + pageWindow -1 ;
-		endPage = endPage > totalPages ? totalPages : endPage;
-		return endPage < 1 ? 1 : endPage;
-	}
-	
-	public int getTotalPages() {
-		return totalPages;
-	}
+    /**
+     * 如果没有初始化，则请初始化
+     */
+    public boolean notInitialized()
+    {
+        return totalRows == -1;
+    }
 
-	public int getCurrentPage() {
-		return currentPage;
-	}
+    /**
+     * 跳转页，从1开始
+     */
+    public void page(int page)
+    {
+        if (notInitialized() && page > 0)
+            currentPage = page;
+        else if (page > 0 && page <= totalPages)
+            currentPage = page;
+    }
 
-	public int getTotalRows() {
-		return totalRows;
-	}
+    /**
+     * 设置需要显示的页码窗口大小，默认10个页码
+     */
+    public void pageWindow(int pageWindow)
+    {
+        this.pageWindow = pageWindow;
+    }
 
-	public String getDirection() {
-		return direction;
-	}
+    public int getPageSize()
+    {
+        return pageSize;
+    }
 
-	/**
-	 * asc或desc
-	 */
-	public void setDirection(String direction) {
-		if("asc".equalsIgnoreCase(direction) || "desc".equalsIgnoreCase(direction)) this.direction = direction.toUpperCase();
-		else System.out.println("bad direction type: "+direction);
-	}
+    public void setPageSize(int pageSize)
+    {
+        this.pageSize = pageSize;
+    }
 
-	public String getProperties() {
-		return properties;
-	}
+    public int getStartRow()
+    {
+        return (currentPage - 1) * pageSize;
+    }
 
-	/**
-	 * id或name,age
-	 */
-	public void setProperties(String properties) {
-		this.properties = properties;
-	}
+    public int getEndRow()
+    {
+        return currentPage * pageSize - 1;
+    }
 
-	/**
-	 * 获取元素列表
-	 */
-	public List<T> getElements() {
-		return elements;
-	}
+    public int getStartPage()
+    {
+        int pageMiddle = pageWindow / 2;
+        int startPage = currentPage <= pageMiddle ? 1 : currentPage - pageMiddle;
+        int endPage = startPage + pageWindow - 1;
+        endPage = endPage > totalPages ? totalPages : endPage;
+        if (endPage == totalPages && startPage > 1 && endPage - startPage < pageWindow - 1)
+        {
+            int leftShift1 = pageWindow - (endPage - startPage) - 1;
+            int leftShift2 = startPage - 1;
+            startPage -= leftShift1 < leftShift2 ? leftShift1 : leftShift2;
+        }
+        return startPage;
+    }
 
-	public void setElements(List<T> elements) {
-		this.elements = elements;
-	}
+    public int getEndPage()
+    {
+        int endPage = getStartPage() + pageWindow - 1;
+        endPage = endPage > totalPages ? totalPages : endPage;
+        return endPage < 1 ? 1 : endPage;
+    }
 
-	/**
-	 * 获取附加信息，最好将附加信息绑定到element实体上
-	 */
-	public List<T> getOthers() {
-		return others;
-	}
+    public int getTotalPages()
+    {
+        return totalPages;
+    }
 
-	public void setOthers(List<T> others) {
-		this.others = others;
-	}
+    public int getCurrentPage()
+    {
+        return currentPage;
+    }
+
+    public int getTotalRows()
+    {
+        return totalRows;
+    }
+
+    public String getDirection()
+    {
+        return direction;
+    }
+
+    /**
+     * asc或desc
+     */
+    public void setDirection(String direction)
+    {
+        if ("asc".equalsIgnoreCase(direction) || "desc".equalsIgnoreCase(direction))
+            this.direction = direction.toUpperCase();
+        else
+            System.out.println("bad direction type: " + direction);
+    }
+
+    public String getProperties()
+    {
+        return properties;
+    }
+
+    /**
+     * id或name,age
+     */
+    public void setProperties(String properties)
+    {
+        this.properties = properties;
+    }
+
+    /**
+     * 获取元素列表
+     */
+    public List<T> getElements()
+    {
+        return elements;
+    }
+
+    public void setElements(List<T> elements)
+    {
+        this.elements = elements;
+    }
+
+    /**
+     * 获取附加信息，最好将附加信息绑定到element实体上
+     */
+    public List<T> getOthers()
+    {
+        return others;
+    }
+
+    public void setOthers(List<T> others)
+    {
+        this.others = others;
+    }
 }

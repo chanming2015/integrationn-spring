@@ -1,8 +1,6 @@
 package com.github.chanming2015.common.util.result;
 
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.util.Arrays;
 
 /**
@@ -16,39 +14,39 @@ import java.util.Arrays;
  * Description: 接口返回结果封装对象
  * Version:1.0.0
  */
-@SuppressWarnings("serial")
 public class Result<T> implements Serializable
 {
+
+    private static final long serialVersionUID = 3549362099366084848L;
 
     /**
      * 接口调用成功，有返回对象
      */
     public static <T> Result<T> newSuccess(T object)
     {
-        Result<T> result = new Result<>();
+        Result<T> result = new Result<T>();
         result.setObject(object);
-        return result;
-    }
-
-    /**
-     * 接口调用失败，返回错误结果
-     */
-    public static <T> Result<T> newFailure(Exception e, String error)
-    {
-        Result<T> result = newException(e);
-        result.setError(error);
         return result;
     }
 
     /**
      * 接口调用失败，返回异常信息
      */
-    public static <T> Result<T> newException(Exception e)
+    public static <T> Result<T> newException(String message)
     {
-        Result<T> result = new Result<>();
+        Result<T> result = new Result<T>();
         result.setCode(-1);
-        result.setException(e);
-        result.setMessage(e.getMessage());
+        result.setMessage(message);
+        return result;
+    }
+
+    /**
+     * 接口调用失败，返回错误结果
+     */
+    public static <T> Result<T> newFailure(String errorCode, String message)
+    {
+        Result<T> result = newException(message);
+        result.setError(errorCode);
         return result;
     }
 
@@ -68,10 +66,6 @@ public class Result<T> implements Serializable
      * 错误信息，通常为异常信息
      */
     private String message;
-    /**
-     * 抓住的异常
-     */
-    private Exception exception;
 
     /** 判断返回结果是否成功 */
     public boolean success()
@@ -83,12 +77,6 @@ public class Result<T> implements Serializable
     public boolean hasObject()
     {
         return code == 0 && object != null;
-    }
-
-    /** 判断返回结果是否有异常 */
-    public boolean hasException()
-    {
-        return exception != null;
     }
 
     public int getCode()
@@ -131,16 +119,6 @@ public class Result<T> implements Serializable
         this.message = message;
     }
 
-    public Exception getException()
-    {
-        return exception;
-    }
-
-    public void setException(Exception exception)
-    {
-        this.exception = exception;
-    }
-
     @Override
     public String toString()
     {
@@ -175,13 +153,6 @@ public class Result<T> implements Serializable
         {
             result.append(", message=");
             result.append(message);
-        }
-        if (exception != null)
-        {
-            StringWriter stringWriter = new StringWriter();
-            exception.printStackTrace(new PrintWriter(stringWriter));
-            result.append(", exception=");
-            result.append(stringWriter.toString());
         }
         result.append(" }");
         return result.toString();

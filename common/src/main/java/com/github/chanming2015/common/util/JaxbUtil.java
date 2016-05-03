@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -58,12 +57,8 @@ public class JaxbUtil
         Reader reader = null;
         try
         {
-            reader = new InputStreamReader(in, "UTF-8");
+            reader = new InputStreamReader(in, Charsets.CHARSET_UTF_8);
             return readerToBean(cls, reader);
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            log.error("streamToBean UnsupportedEncodingException");
         }
         finally
         {
@@ -79,8 +74,6 @@ public class JaxbUtil
                 }
             }
         }
-
-        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -93,8 +86,7 @@ public class JaxbUtil
 
             // 检查所使用的底层xml解析库，默认禁止外部实体的解析
             XMLInputFactory xif = XMLInputFactory.newFactory();
-            xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES,
-                    false);
+            xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader xsr = xif.createXMLStreamReader(reader);
 

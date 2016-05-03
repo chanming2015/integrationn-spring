@@ -1,6 +1,5 @@
 package com.github.chanming2015.common.util;
 
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -26,10 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SecurityUtil
 {
-    private static final Logger log = LoggerFactory
-            .getLogger(SecurityUtil.class);
-
-    private static final String CHARSET_UTF_8 = "utf-8";
+    private static final Logger log = LoggerFactory.getLogger(SecurityUtil.class);
 
     /**
      * Description: AES加密
@@ -54,15 +50,7 @@ public class SecurityUtil
      */
     public static String decryptAesString(String keyString, String content)
     {
-        try
-        {
-            return new String(decryptAes(keyString, content), CHARSET_UTF_8);
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            log.error("decryptAesString UnsupportedEncodingException", e);
-        }
-        return null;
+        return new String(decryptAes(keyString, content), Charsets.CHARSET_UTF_8);
     }
 
     /**
@@ -74,18 +62,10 @@ public class SecurityUtil
      */
     public static byte[] encryptAes(String keyString, String content)
     {
-        try
-        {
-            byte[] byteKey = keyString.getBytes(CHARSET_UTF_8);
-            byte[] byteContent = content.getBytes(CHARSET_UTF_8);
+        byte[] byteKey = keyString.getBytes(Charsets.CHARSET_UTF_8);
+        byte[] byteContent = content.getBytes(Charsets.CHARSET_UTF_8);
 
-            return doAes(byteKey, byteContent, true);
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            log.error("encryptAes UnsupportedEncodingException", e);
-        }
-        return new byte[0];
+        return doAes(byteKey, byteContent, true);
     }
 
     /**
@@ -97,18 +77,10 @@ public class SecurityUtil
      */
     public static byte[] decryptAes(String keyString, String content)
     {
-        try
-        {
-            byte[] byteKey = keyString.getBytes(CHARSET_UTF_8);
-            byte[] byteContent = parseHexStr2Byte(content);
+        byte[] byteKey = keyString.getBytes(Charsets.CHARSET_UTF_8);
+        byte[] byteContent = parseHexStr2Byte(content);
 
-            return doAes(byteKey, byteContent, false);
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            log.error("encryptAes UnsupportedEncodingException", e);
-        }
-        return new byte[0];
+        return doAes(byteKey, byteContent, false);
     }
 
     /**
@@ -125,11 +97,13 @@ public class SecurityUtil
         {
             // 1.生成加密密钥
             KeyGenerator kgen = KeyGenerator.getInstance("AES");
-            kgen.init(128, new SecureRandom(byteKey));
+            // 指定算法实现，解决Oracle JDK下平台兼容性问题
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            random.setSeed(byteKey);
+            kgen.init(128, random);
             SecretKey secretKey = kgen.generateKey();
             byte[] enCodeFormart = secretKey.getEncoded();
-            SecretKeySpec key = new SecretKeySpec(enCodeFormart,
-                    secretKey.getAlgorithm());
+            SecretKeySpec key = new SecretKeySpec(enCodeFormart, secretKey.getAlgorithm());
 
             // 2.创建密码器
             Cipher cipher = Cipher.getInstance(secretKey.getAlgorithm());
@@ -194,18 +168,10 @@ public class SecurityUtil
      */
     public static byte[] encryptHMAC(String keyString, String content)
     {
-        try
-        {
-            byte[] byteKey = keyString.getBytes(CHARSET_UTF_8);
-            byte[] byteContent = content.getBytes(CHARSET_UTF_8);
+        byte[] byteKey = keyString.getBytes(Charsets.CHARSET_UTF_8);
+        byte[] byteContent = content.getBytes(Charsets.CHARSET_UTF_8);
 
-            return encryptHMAC(byteKey, byteContent);
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            log.error("encryptHMAC UnsupportedEncodingException", e);
-        }
-        return new byte[0];
+        return encryptHMAC(byteKey, byteContent);
     }
 
     /**
@@ -279,8 +245,7 @@ public class SecurityUtil
         for (int i = 0; i < hexStr.length() / 2; i++)
         {
             int high = Integer.parseInt(hexStr.substring(i * 2, i * 2 + 1), 16);
-            int low = Integer.parseInt(hexStr.substring(i * 2 + 1, i * 2 + 2),
-                    16);
+            int low = Integer.parseInt(hexStr.substring(i * 2 + 1, i * 2 + 2), 16);
             result[i] = (byte) (high * 16 + low);
         }
         return result;

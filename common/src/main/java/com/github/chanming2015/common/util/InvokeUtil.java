@@ -133,6 +133,27 @@ public class InvokeUtil
         if (!EmptyUtil.isNull(obj, fieldName, value))
         {
             Method method = getSetMethod(obj.getClass(), fieldName);
+            Class<?> parameterTypes = method.getParameterTypes()[0];
+            if (String.class == parameterTypes && !(value instanceof String))
+            {
+                value = value + "";
+            }
+            else if (Integer.class == parameterTypes && !(value instanceof Integer))
+            {
+                try
+                {
+                    value = Integer.valueOf(value + "");
+                }
+                catch (NumberFormatException e)
+                {
+                    log.error(value + " NumberFormatException");
+                    value = Integer.valueOf(0);
+                }
+            }
+            else if (Boolean.class == parameterTypes && !(value instanceof Boolean))
+            {
+                value = Boolean.valueOf(value + "");
+            }
             try
             {
                 if (method != null)
@@ -190,8 +211,7 @@ public class InvokeUtil
             String name = method.getName();
             if (name.startsWith(me.getValue()))
             {
-                fieldList.add(name.substring(3, 4).toLowerCase(Locale.US)
-                        + name.substring(4));
+                fieldList.add(name.substring(3, 4).toLowerCase(Locale.US) + name.substring(4));
             }
         }
         if (MethodEnum.GET.equals(me))

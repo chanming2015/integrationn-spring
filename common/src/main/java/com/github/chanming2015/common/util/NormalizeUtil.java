@@ -11,9 +11,9 @@ import java.text.Normalizer.Form;
  */
 public class NormalizeUtil
 {
-    public static String normalize(String param)
+    public static String normalize(CharSequence param)
     {
-        if (null == param)
+        if (EmptyUtil.isEmpty(param))
         {
             return "";
         }

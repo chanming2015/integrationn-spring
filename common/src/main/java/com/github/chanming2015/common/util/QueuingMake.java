@@ -28,38 +28,57 @@ import com.github.chanming2015.common.util.DateUtil.FormatType;
  * Long queuing = QueuingMake.next("01");
  * Version:1.0.0
  */
-public class QueuingMake {
-	private final static HashMap<String,Integer> map = new HashMap<String,Integer>();
-	private final static DecimalFormat decimalFormat = new DecimalFormat("0000");
-	
-	/**
-	 * @author XuMaoSen
-	 * Create Time:2015年12月4日 下午7:45:24
-	 * Description 获取流水号
-	 * @param src
-	 * @return
-	 */
-	public final static Long next(String src) {
-		String time = DateUtil.format(DateUtil.getNow(),
-				FormatType.SMALLMICROSECONDS);
-		if (src == null) {
-			src = "00";
-		} else {
-			try {
-				Integer.parseInt(src);
-			} catch (Exception e) {
-				src = "00";
-			}
-		}
-		Integer now = map.get(src.toUpperCase());
-		if (now == null || now == 9999) {
-			now = new Integer(1);
-		} else {
-			now += 1;
-		}
-		String queuing = time + src + decimalFormat.format(now);
-		map.put(src.toUpperCase(), now);
-		return Long.parseLong(queuing);
-	}
-	
+public class QueuingMake
+{
+    private static final HashMap<String, Integer> map = new HashMap<String, Integer>();
+    private static final ThreadLocal<DecimalFormat> decimalFormat = new ThreadLocal<DecimalFormat>()
+    {
+
+        @Override
+        protected DecimalFormat initialValue()
+        {
+            return new DecimalFormat("0000");
+        }
+
+    };
+
+    /**
+     * @author XuMaoSen
+     * Create Time:2015年12月4日 下午7:45:24
+     * Description 获取流水号
+     * @param src
+     * @return
+     */
+    public final static Long next(String src)
+    {
+        String time = DateUtil.format(DateUtil.getNow(), FormatType.SMALLMICROSECONDS);
+        if (src == null)
+        {
+            src = "00";
+        }
+        else
+        {
+            try
+            {
+                Integer.parseInt(src);
+            }
+            catch (Exception e)
+            {
+                src = "00";
+            }
+        }
+        Integer now = map.get(src.toUpperCase());
+        if (now == null || now == 9999)
+        {
+            now = new Integer(1);
+        }
+        else
+        {
+            now += 1;
+        }
+        String queuing = time + src + decimalFormat.get().format(now);
+        map.put(src.toUpperCase(), now);
+        return Long.parseLong(queuing);
+    }
+
 }

@@ -90,4 +90,35 @@ public class FileUtil
 
         return false;
     }
+
+    /**
+     * Description: 读取文件内容
+     * @param file 待读取文件路径
+     * Create Date:2016年5月25日
+     * @author XuMaoSen
+     */
+    public static String readString(String filePath)
+    {
+        return readString(new File(filePath));
+    }
+
+    /**
+     * Description: 读取文件内容
+     * @param file 待读取文件
+     * Create Date:2016年5月25日
+     * @author XuMaoSen
+     */
+    public static String readString(File file)
+    {
+        try
+        {
+            byte[] buff = Files.readAllBytes(Paths.get(file.toURI()));
+            return new String(buff, Charsets.CHARSET_UTF_8);
+        }
+        catch (IOException e)
+        {
+            log.error("readString IOException");
+        }
+        return null;
+    }
 }

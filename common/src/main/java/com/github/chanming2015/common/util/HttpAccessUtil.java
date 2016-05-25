@@ -2,13 +2,17 @@ package com.github.chanming2015.common.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -20,6 +24,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +38,7 @@ import org.slf4j.LoggerFactory;
 public class HttpAccessUtil
 {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(HttpAccessUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpAccessUtil.class);
 
     /**
      * Description: 执行HTTP-GET请求
@@ -44,8 +48,7 @@ public class HttpAccessUtil
      * Create Date:2016年4月8日
      * @author XuMaoSen
      */
-    public static String get(String url, Map<String, String> head,
-            RequestConfig config)
+    public static String get(String url, Map<String, String> head, RequestConfig config)
     {
         HttpGet httpGet = new HttpGet(url);
 
@@ -60,8 +63,7 @@ public class HttpAccessUtil
      * Create Date:2016年4月8日
      * @author XuMaoSen
      */
-    public static String delete(String url, Map<String, String> head,
-            RequestConfig config)
+    public static String delete(String url, Map<String, String> head, RequestConfig config)
     {
         HttpDelete httpDelete = new HttpDelete(url);
 
@@ -77,15 +79,41 @@ public class HttpAccessUtil
      * Create Date:2016年4月8日
      * @author XuMaoSen
      */
-    public static String postJson(String url, String jsonData,
-            Map<String, String> head, RequestConfig config)
+    public static String postJson(String url, String jsonData, Map<String, String> head,
+            RequestConfig config)
     {
         HttpPost httpPost = new HttpPost(url);
 
         if (jsonData != null)
         {
-            httpPost.setEntity(new StringEntity(jsonData,
-                    ContentType.APPLICATION_JSON));
+            httpPost.setEntity(new StringEntity(jsonData, ContentType.APPLICATION_JSON));
+        }
+
+        return excute(head, config, httpPost);
+    }
+
+    /**
+     * Description: 执行HTTP-POST请求
+     * @param url 请求地址
+     * @param paramData url参数
+     * @param head 请求头部信息
+     * @param config 超时设置
+     * Create Date:2016年4月8日
+     * @author XuMaoSen
+     */
+    public static String postUrl(String url, Map<String, String> paramData,
+            Map<String, String> head, RequestConfig config)
+    {
+        HttpPost httpPost = new HttpPost(url);
+
+        if (paramData != null)
+        {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            for (Entry<String, String> entry : paramData.entrySet())
+            {
+                params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+            }
+            httpPost.setEntity(new UrlEncodedFormEntity(params, Charsets.CHARSET_UTF_8));
         }
 
         return excute(head, config, httpPost);
@@ -100,15 +128,14 @@ public class HttpAccessUtil
      * Create Date:2016年4月8日
      * @author XuMaoSen
      */
-    public static String putJson(String url, String jsonData,
-            Map<String, String> head, RequestConfig config)
+    public static String putJson(String url, String jsonData, Map<String, String> head,
+            RequestConfig config)
     {
         HttpPut httpPut = new HttpPut(url);
 
         if (jsonData != null)
         {
-            httpPut.setEntity(new StringEntity(jsonData,
-                    ContentType.APPLICATION_JSON));
+            httpPut.setEntity(new StringEntity(jsonData, ContentType.APPLICATION_JSON));
         }
 
         return excute(head, config, httpPut);
@@ -148,8 +175,8 @@ public class HttpAccessUtil
      * Create Date:2016年4月8日
      * @author XuMaoSen
      */
-    private static String excute(Map<String, String> head,
-            RequestConfig config, HttpRequestBase request)
+    private static String excute(Map<String, String> head, RequestConfig config,
+            HttpRequestBase request)
     {
         String result = null;
 

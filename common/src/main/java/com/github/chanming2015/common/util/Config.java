@@ -1,4 +1,4 @@
-package com.github.chanming2015.common.util.config;
+package com.github.chanming2015.common.util;
 
 import java.util.Properties;
 

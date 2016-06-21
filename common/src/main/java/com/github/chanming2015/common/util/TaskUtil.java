@@ -1,4 +1,4 @@
-package com.github.chanming2015.common.util.config;
+package com.github.chanming2015.common.util;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -13,8 +13,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -322,5 +324,83 @@ public class TaskUtil
     public static interface CallBack
     {
         void handle(Object result);
+    }
+
+    /**
+     * Description: 自定义延迟任务类
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     * Version:1.0.0
+     * @param <T>
+     */
+    private static class ScheduleCallable<T> implements Callable<T>
+    {
+
+        private Callable<T> task;
+
+        public ScheduleCallable(Callable<T> task)
+        {
+            this.task = task;
+        }
+
+        @Override
+        public T call() throws Exception
+        {
+            return TaskUtil.wait(task);
+        }
+
+    }
+
+    /**
+     * Description: 自定义延迟任务类
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     * Version:1.0.0
+     */
+    private static class ScheduleRunnable implements Runnable
+    {
+
+        private Runnable task;
+
+        public ScheduleRunnable(Runnable task)
+        {
+            this.task = task;
+        }
+
+        @Override
+        public void run()
+        {
+            TaskUtil.submit(task);
+        }
+
+    }
+
+    /**
+     * Description: 任务工具线程工厂
+     * Create Date:2016年4月18日
+     * @author XuMaoSen
+     * Version:1.0.0
+     */
+    private static class TaskUtilThreadFactory implements ThreadFactory
+    {
+
+        private static final AtomicInteger taskutilThreadNumber = new AtomicInteger(1);
+        private final String threadNamePrefix;
+
+        TaskUtilThreadFactory(String threadNamePrefix)
+        {
+            this.threadNamePrefix = threadNamePrefix;
+        }
+
+        @Override
+        public Thread newThread(Runnable r)
+        {
+            Thread t = new Thread(r, String.format("TaskUtil-%d-%s",
+                    taskutilThreadNumber.getAndIncrement(), this.threadNamePrefix));
+            t.setDaemon(true);
+            t.setPriority(Thread.MIN_PRIORITY);
+            return t;
+        }
+
     }
 }

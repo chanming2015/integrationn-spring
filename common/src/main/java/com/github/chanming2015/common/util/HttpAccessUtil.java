@@ -205,7 +205,7 @@ public class HttpAccessUtil
                 HttpEntity entity = response.getEntity();
                 if (entity != null)
                 {
-                    result = EntityUtils.toString(entity);
+                    result = EntityUtils.toString(entity, Charsets.CHARSET_UTF_8);
                 }
                 // 销毁实体
                 EntityUtils.consume(entity);

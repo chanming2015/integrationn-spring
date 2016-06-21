@@ -178,18 +178,15 @@ public class InvokeUtil
 
     public enum MethodEnum
     {
-        GET("get"), SET("set");
+        GET, SET;
 
-        private String value;
-
-        private MethodEnum(String value)
+        /** @author XuMaoSen
+         */
+        @Override
+        public String toString()
         {
-            this.value = value;
-        }
 
-        public String getValue()
-        {
-            return value;
+            return name().toLowerCase(Locale.US);
         }
 
     }
@@ -209,7 +206,7 @@ public class InvokeUtil
         for (Method method : methods)
         {
             String name = method.getName();
-            if (name.startsWith(me.getValue()))
+            if (name.startsWith(me.toString()))
             {
                 fieldList.add(name.substring(3, 4).toLowerCase(Locale.US) + name.substring(4));
             }

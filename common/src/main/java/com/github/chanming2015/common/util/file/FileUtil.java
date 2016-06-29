@@ -1,4 +1,4 @@
-package com.github.chanming2015.common.util;
+package com.github.chanming2015.common.util.file;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +18,9 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.chanming2015.common.util.Charsets;
+import com.github.chanming2015.common.util.EmptyUtil;
 
 /**
  * Description: 

@@ -1,4 +1,4 @@
-package com.github.chanming2015.common.util;
+package com.github.chanming2015.common.util.file;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.chanming2015.common.util.TaskUtil;
 
 /**
  * Project:common

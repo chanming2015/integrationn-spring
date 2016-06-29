@@ -1,4 +1,4 @@
-package com.github.chanming2015.common.util;
+package com.github.chanming2015.common.util.file;
 
 import java.io.Closeable;
 import java.io.IOException;

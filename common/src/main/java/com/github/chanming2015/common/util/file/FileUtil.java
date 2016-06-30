@@ -43,6 +43,7 @@ public class FileUtil
      */
     public static void writeString(String filePath, String content) throws IOException
     {
+        createFile(filePath);
         writeString(new File(filePath), content, false);
     }
 
@@ -58,6 +59,7 @@ public class FileUtil
     public static void writeString(String filePath, String content, boolean append)
             throws IOException
     {
+        createFile(filePath);
         writeString(new File(filePath), content, append);
     }
 
@@ -88,7 +90,7 @@ public class FileUtil
         {
             byte[] buff = content.getBytes(Charsets.UTF_8);
             OpenOption option = StandardOpenOption.CREATE;
-            if (append && file.exists())
+            if (append && file.isFile())
             {
                 option = StandardOpenOption.APPEND;
             }
@@ -250,6 +252,7 @@ public class FileUtil
         RandomAccessFile raf = null;
         try
         {
+            createFile(fileName);
             raf = new RandomAccessFile(fileName, "rw");
             raf.setLength(fileSize);
         }
@@ -258,6 +261,30 @@ public class FileUtil
             if (raf != null)
             {
                 raf.close();
+            }
+        }
+    }
+
+    /**
+     * Description: 创建文件和父级目录
+     * Create Date:2016年6月30日
+     * @author XuMaoSen
+     */
+    public static void createFile(String fileName) throws IOException
+    {
+        File targetFile = new File(fileName);
+
+        if (!targetFile.isFile())
+        {
+            File parent = targetFile.getParentFile();
+            if (!parent.isDirectory() && !parent.mkdirs())
+            {
+                return;
+            }
+
+            if (!targetFile.createNewFile())
+            {
+                return;
             }
         }
     }

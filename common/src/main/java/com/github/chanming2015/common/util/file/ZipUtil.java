@@ -35,16 +35,8 @@ public class ZipUtil
      */
     public static boolean zip(String targetFilePath, String... sourcePaths) throws IOException
     {
+        FileUtil.createFile(targetFilePath);
         File targetFile = new File(targetFilePath);
-
-        if (!targetFile.isFile())
-        {
-            return false;
-        }
-        if (!targetFile.exists() && !targetFile.createNewFile())
-        {
-            return false;
-        }
 
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
@@ -132,11 +124,7 @@ public class ZipUtil
         File dictory = new File(targetPath);
         int total = 0;
         int entries = 0;
-        if (!dictory.isDirectory())
-        {
-            return;
-        }
-        if (!dictory.exists() && !dictory.mkdirs())
+        if (!dictory.isDirectory() && !dictory.mkdirs())
         {
             return;
         }

@@ -86,7 +86,7 @@ public class FileUtil
     {
         if (!EmptyUtil.isNull(file, content))
         {
-            byte[] buff = content.getBytes(Charsets.CHARSET_UTF_8);
+            byte[] buff = content.getBytes(Charsets.UTF_8);
             OpenOption option = StandardOpenOption.CREATE;
             if (append && file.exists())
             {
@@ -119,7 +119,7 @@ public class FileUtil
     public static String readString(File file) throws IOException
     {
         byte[] buff = Files.readAllBytes(Paths.get(file.toURI()));
-        return new String(buff, Charsets.CHARSET_UTF_8);
+        return new String(buff, Charsets.UTF_8);
     }
 
     /**

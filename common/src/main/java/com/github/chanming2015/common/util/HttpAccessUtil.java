@@ -113,7 +113,7 @@ public class HttpAccessUtil
             {
                 params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
             }
-            httpPost.setEntity(new UrlEncodedFormEntity(params, Charsets.CHARSET_UTF_8));
+            httpPost.setEntity(new UrlEncodedFormEntity(params, Charsets.UTF_8));
         }
 
         return excute(head, config, httpPost);
@@ -205,7 +205,7 @@ public class HttpAccessUtil
                 HttpEntity entity = response.getEntity();
                 if (entity != null)
                 {
-                    result = EntityUtils.toString(entity, Charsets.CHARSET_UTF_8);
+                    result = EntityUtils.toString(entity, Charsets.UTF_8);
                 }
                 // 销毁实体
                 EntityUtils.consume(entity);

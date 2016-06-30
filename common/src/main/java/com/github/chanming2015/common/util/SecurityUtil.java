@@ -50,7 +50,7 @@ public class SecurityUtil
      */
     public static String decryptAesString(String keyString, String content)
     {
-        return new String(decryptAes(keyString, content), Charsets.CHARSET_UTF_8);
+        return new String(decryptAes(keyString, content), Charsets.UTF_8);
     }
 
     /**
@@ -62,8 +62,8 @@ public class SecurityUtil
      */
     public static byte[] encryptAes(String keyString, String content)
     {
-        byte[] byteKey = keyString.getBytes(Charsets.CHARSET_UTF_8);
-        byte[] byteContent = content.getBytes(Charsets.CHARSET_UTF_8);
+        byte[] byteKey = keyString.getBytes(Charsets.UTF_8);
+        byte[] byteContent = content.getBytes(Charsets.UTF_8);
 
         return doAes(byteKey, byteContent, true);
     }
@@ -77,7 +77,7 @@ public class SecurityUtil
      */
     public static byte[] decryptAes(String keyString, String content)
     {
-        byte[] byteKey = keyString.getBytes(Charsets.CHARSET_UTF_8);
+        byte[] byteKey = keyString.getBytes(Charsets.UTF_8);
         byte[] byteContent = parseHexStr2Byte(content);
 
         return doAes(byteKey, byteContent, false);
@@ -168,8 +168,8 @@ public class SecurityUtil
      */
     public static byte[] encryptHMAC(String keyString, String content)
     {
-        byte[] byteKey = keyString.getBytes(Charsets.CHARSET_UTF_8);
-        byte[] byteContent = content.getBytes(Charsets.CHARSET_UTF_8);
+        byte[] byteKey = keyString.getBytes(Charsets.UTF_8);
+        byte[] byteContent = content.getBytes(Charsets.UTF_8);
 
         return encryptHMAC(byteKey, byteContent);
     }

@@ -57,7 +57,7 @@ public class JaxbUtil
         Reader reader = null;
         try
         {
-            reader = new InputStreamReader(in, Charsets.CHARSET_UTF_8);
+            reader = new InputStreamReader(in, Charsets.UTF_8);
             return readerToBean(cls, reader);
         }
         finally

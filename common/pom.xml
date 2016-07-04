@@ -9,6 +9,10 @@
 	<artifactId>common</artifactId>
 	<packaging>jar</packaging>
 
+	<build>
+		<finalName>${project.artifactId}</finalName>
+	</build>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
@@ -24,7 +28,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
+			<artifactId>jcl-over-slf4j</artifactId>
 		</dependency>
 
 		<dependency>

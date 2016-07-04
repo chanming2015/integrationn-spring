@@ -12,7 +12,7 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<maven.test.skip>true</maven.test.skip>
-		<spring.version>4.0.2.RELEASE</spring.version>
+		<spring.version>4.1.4.RELEASE</spring.version>
 		<hibernate.version>4.3.4.Final</hibernate.version>
 		<shiro.version>1.2.3</shiro.version>
 		<myjar.version>1.0.0</myjar.version>
@@ -87,7 +87,7 @@
 			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-jpa</artifactId>
-				<version>1.5.1.RELEASE</version>
+				<version>1.7.4.RELEASE</version>
 			</dependency>
 
 			<dependency>
@@ -100,6 +100,11 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-c3p0</artifactId>
 				<version>${hibernate.version}</version>
 			</dependency>
 			<dependency>
@@ -227,6 +232,12 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
 				<version>3.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.0.1</version>
 			</dependency>
 
 			<!-- ********************slf4j-config******************** -->

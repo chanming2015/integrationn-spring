@@ -26,8 +26,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author XuMaoSen
@@ -38,7 +36,7 @@ import org.slf4j.LoggerFactory;
 public class HttpAccessUtil
 {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpAccessUtil.class);
+    private static final Logger logger = Logger.getLogger(HttpAccessUtil.class);
 
     /**
      * Description: 执行HTTP-GET请求

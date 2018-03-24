@@ -12,8 +12,8 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<maven.test.skip>true</maven.test.skip>
-		<spring.version>4.1.4.RELEASE</spring.version>
-		<hibernate.version>4.3.4.Final</hibernate.version>
+		<spring.version>4.3.9.RELEASE</spring.version>
+		<hibernate.version>5.0.12.Final</hibernate.version>
 		<shiro.version>1.2.3</shiro.version>
 		<myjar.version>1.0.0</myjar.version>
 	</properties>

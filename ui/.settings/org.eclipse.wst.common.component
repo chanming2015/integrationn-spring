@@ -2,19 +2,7 @@
     <wb-module deploy-name="ui">
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/webapp"/>
-        <dependent-module archiveName="web-1.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/web/web">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="domain-1.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/domain/domain">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="common-1.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/common/common">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="context-root" value="ui"/>
-        <property name="java-output-path" value="/ui/target/classes"/>
+        <property name="java-output-path" value="/ui/build/classes"/>
     </wb-module>
 </project-modules>

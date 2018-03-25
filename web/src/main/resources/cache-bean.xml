@@ -9,7 +9,7 @@
         <property name="configLocation" value="classpath:/ehcache.xml"/>
         <property name="cacheManagerName" value="ehcache"/>
     </bean>
-    <bean id="springCacheManager" class="com.github.chanming2015.web.authority.aop.MyEhCacheCacheManager">
+    <bean id="springCacheManager" class="com.github.chanming2015.domain.authority.aop.MyEhCacheCacheManager">
         <property name="cacheManager" ref="ehcacheManager"/>
     </bean>
 </beans>

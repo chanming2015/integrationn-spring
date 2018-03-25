@@ -92,13 +92,13 @@
 			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-jpa</artifactId>
-				<version>1.7.4.RELEASE</version>
+				<version>1.11.4.RELEASE</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjweaver</artifactId>
-				<version>1.7.4</version>
+				<version>1.8.10</version>
 			</dependency>
 
 			<!-- ********************hibernate-config******************** -->
@@ -117,12 +117,17 @@
 				<artifactId>hibernate-entitymanager</artifactId>
 				<version>${hibernate.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>dom4j</groupId>
+				<artifactId>dom4j</artifactId>
+				<version>1.6.1</version>
+			</dependency>
 
 			<!-- ********************sql-config******************** -->
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
-				<version>5.1.27</version>
+				<version>5.1.42</version>
 				<scope>runtime</scope>
 			</dependency>
 

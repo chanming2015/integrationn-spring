@@ -13,6 +13,6 @@
 	<tool>
 		<key>props</key>
 		<scope>application</scope>
-		<class>com.github.chanming2015.common.util.config.Config</class>
+		<class>com.github.chanming2015.common.util.file.Config</class>
 	</tool>
 </toolbox>

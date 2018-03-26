@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.chanming2015.common.util.result.Result;
+import com.github.chanming2015.utils.log.LoggerAop;
+import com.github.chanming2015.utils.log.SimpleLogFormater;
 
 /**
  * Project:domain
@@ -27,28 +29,28 @@ public class DefaultAopLogger implements LoggerAop
     {
     }
 
-    /** @author XuMaoSen 
+    /** @author XuMaoSen
      */
     @Override
     public void afterReturningAdvice(Object retVal)
     {
     }
 
-    /** @author XuMaoSen 
+    /** @author XuMaoSen
      */
     @Override
     public void afterThrowingAdvice(Exception exception)
     {
     }
 
-    /** @author XuMaoSen 
+    /** @author XuMaoSen
      */
     @Override
     public void afterFinallyAdvice()
     {
     }
 
-    /** @author XuMaoSen 
+    /** @author XuMaoSen
      */
     @Override
     public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable

@@ -299,6 +299,12 @@
 				<artifactId>web</artifactId>
 				<version>${myjar.version}</version>
 			</dependency>
+			<!-- https://github.com/chanming2015/spring-webapp-base -->
+			<dependency>
+				<groupId>com.github.chanming2015</groupId>
+				<artifactId>utils</artifactId>
+				<version>1.0.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

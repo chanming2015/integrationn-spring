@@ -16,8 +16,8 @@ import com.github.chanming2015.domain.entity.SystemFunction;
 import com.github.chanming2015.domain.repository.SystemFunctionRepository;
 import com.github.chanming2015.domain.service.QueuingService;
 import com.github.chanming2015.domain.service.SystemFunctionService;
-import com.github.chanming2015.domain.sql.SpecParam;
-import com.github.chanming2015.domain.sql.SpecUtil;
+import com.github.chanming2015.utils.sql.SpecParam;
+import com.github.chanming2015.utils.sql.SpecUtil;
 
 @Service("systemFunctionService")
 public class SystemFunctionServiceImpl implements SystemFunctionService

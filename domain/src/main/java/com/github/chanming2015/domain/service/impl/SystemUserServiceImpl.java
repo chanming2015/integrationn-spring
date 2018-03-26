@@ -22,8 +22,8 @@ import com.github.chanming2015.domain.repository.SystemUserRoleRepository;
 import com.github.chanming2015.domain.service.PasswordService;
 import com.github.chanming2015.domain.service.QueuingService;
 import com.github.chanming2015.domain.service.SystemUserService;
-import com.github.chanming2015.domain.sql.SpecParam;
-import com.github.chanming2015.domain.sql.SpecUtil;
+import com.github.chanming2015.utils.sql.SpecParam;
+import com.github.chanming2015.utils.sql.SpecUtil;
 
 @Service("systemUserService")
 public class SystemUserServiceImpl implements SystemUserService

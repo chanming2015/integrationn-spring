@@ -8,7 +8,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.chanming2015.common.util.sql.SpecParam;
 import com.github.chanming2015.domain.entity.SystemFunction;
 import com.github.chanming2015.domain.entity.SystemRole;
 import com.github.chanming2015.domain.entity.SystemRoleFunction;
@@ -20,7 +19,8 @@ import com.github.chanming2015.domain.repository.SystemRoleRepository;
 import com.github.chanming2015.domain.repository.SystemUserRepository;
 import com.github.chanming2015.domain.repository.SystemUserRoleRepository;
 import com.github.chanming2015.domain.service.AuthorityService;
-import com.github.chanming2015.domain.util.SpecUtil;
+import com.github.chanming2015.domain.sql.SpecParam;
+import com.github.chanming2015.domain.sql.SpecUtil;
 
 @Service("authorityService")
 public class AuthorityServiceImpl implements AuthorityService {

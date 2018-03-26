@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.chanming2015.common.util.result.PageObject;
 import com.github.chanming2015.common.util.result.Pager;
 import com.github.chanming2015.common.util.result.Result;
-import com.github.chanming2015.common.util.sql.SpecParam;
 import com.github.chanming2015.domain.entity.SystemRole;
 import com.github.chanming2015.domain.entity.SystemRoleFunction;
 import com.github.chanming2015.domain.entity.SystemUserRole;
@@ -26,7 +25,8 @@ import com.github.chanming2015.domain.repository.SystemRoleRepository;
 import com.github.chanming2015.domain.repository.SystemUserRoleRepository;
 import com.github.chanming2015.domain.service.QueuingService;
 import com.github.chanming2015.domain.service.SystemRoleService;
-import com.github.chanming2015.domain.util.SpecUtil;
+import com.github.chanming2015.domain.sql.SpecParam;
+import com.github.chanming2015.domain.sql.SpecUtil;
 
 @Service("systemRoleService")
 public class SystemRoleServiceImpl implements SystemRoleService

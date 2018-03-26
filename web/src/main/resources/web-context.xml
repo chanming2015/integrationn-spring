@@ -35,13 +35,13 @@
 		<property name="logAbandoned" value="true" />
 		<property name="poolPreparedStatements" value="false" />
 		<property name="filters" value="stat" />
-		<property name="connectionProperties" value="druid.stat.slowSqlMillis=200;druid.stat.logSlowSql=false" />
+		<property name="connectionProperties" value="druid.stat.slowSqlMillis=200;druid.stat.logSlowSql=true" />
 	</bean>
 
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter" />
-		<property name="packagesToScan" value="com.github.chanming2015.domain.entity" />
+		<property name="packagesToScan" value="com.github.chanming2015.domain.entity,com.github.chanming2015.web.entity" />
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>

@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 import com.github.chanming2015.common.util.result.PageObject;
 import com.github.chanming2015.common.util.result.Pager;
 import com.github.chanming2015.common.util.result.Result;
-import com.github.chanming2015.common.util.sql.SpecParam;
 import com.github.chanming2015.domain.entity.SystemFunction;
 import com.github.chanming2015.domain.repository.SystemFunctionRepository;
 import com.github.chanming2015.domain.service.QueuingService;
 import com.github.chanming2015.domain.service.SystemFunctionService;
-import com.github.chanming2015.domain.util.SpecUtil;
+import com.github.chanming2015.domain.sql.SpecParam;
+import com.github.chanming2015.domain.sql.SpecUtil;
 
 @Service("systemFunctionService")
 public class SystemFunctionServiceImpl implements SystemFunctionService

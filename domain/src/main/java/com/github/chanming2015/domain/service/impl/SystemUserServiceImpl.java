@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.github.chanming2015.common.util.result.PageObject;
 import com.github.chanming2015.common.util.result.Pager;
 import com.github.chanming2015.common.util.result.Result;
-import com.github.chanming2015.common.util.sql.SpecParam;
 import com.github.chanming2015.domain.entity.SystemUser;
 import com.github.chanming2015.domain.entity.SystemUserRole;
 import com.github.chanming2015.domain.repository.SystemUserRepository;
@@ -23,7 +22,8 @@ import com.github.chanming2015.domain.repository.SystemUserRoleRepository;
 import com.github.chanming2015.domain.service.PasswordService;
 import com.github.chanming2015.domain.service.QueuingService;
 import com.github.chanming2015.domain.service.SystemUserService;
-import com.github.chanming2015.domain.util.SpecUtil;
+import com.github.chanming2015.domain.sql.SpecParam;
+import com.github.chanming2015.domain.sql.SpecUtil;
 
 @Service("systemUserService")
 public class SystemUserServiceImpl implements SystemUserService

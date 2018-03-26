@@ -3,7 +3,7 @@ package com.github.chanming2015.web.biz;
 import org.springframework.data.domain.Page;
 
 import com.github.chanming2015.common.util.result.Result;
-import com.github.chanming2015.domain.sql.SpecParam;
+import com.github.chanming2015.utils.sql.SpecParam;
 import com.github.chanming2015.web.entity.PersonInfo;
 
 /**

@@ -6,8 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.github.chanming2015.common.util.result.Result;
-import com.github.chanming2015.domain.sql.SpecParam;
-import com.github.chanming2015.domain.sql.SpecUtil;
+import com.github.chanming2015.utils.sql.SpecParam;
+import com.github.chanming2015.utils.sql.SpecUtil;
 import com.github.chanming2015.web.biz.PersonInfoService;
 import com.github.chanming2015.web.entity.PersonInfo;
 import com.github.chanming2015.web.repository.PersonInfoRepository;

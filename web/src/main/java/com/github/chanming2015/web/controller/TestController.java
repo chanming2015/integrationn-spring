@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.github.chanming2015.common.util.result.Result;
-import com.github.chanming2015.domain.sql.SpecParam;
+import com.github.chanming2015.utils.sql.SpecParam;
 import com.github.chanming2015.web.biz.PersonInfoService;
 import com.github.chanming2015.web.entity.PersonInfo;
 

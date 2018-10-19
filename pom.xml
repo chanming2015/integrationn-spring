@@ -12,7 +12,7 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<maven.test.skip>true</maven.test.skip>
-		<spring.version>4.3.9.RELEASE</spring.version>
+		<spring.version>4.3.18.RELEASE</spring.version>
 		<hibernate.version>5.0.12.Final</hibernate.version>
 		<shiro.version>1.2.3</shiro.version>
 		<myjar.version>1.0.0</myjar.version>
@@ -220,7 +220,7 @@
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
-				<version>4.3.2</version>
+				<version>4.3.6</version>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>

@@ -14,9 +14,9 @@
 			classpath:web-context.xml,
 			classpath:domain-bean.xml,
 			classpath:web-bean.xml,
-			classpath:ui-bean.xml,
-			classpath:shiro.xml,
-			classpath:cache-bean.xml
+			classpath:ui-bean.xml
+			<!-- classpath:shiro.xml,
+			classpath:cache-bean.xml -->
 		</param-value>
 	</context-param>
 
@@ -37,7 +37,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<filter>
+	<!-- <filter>
 		<filter-name>shiroFilter</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
@@ -45,7 +45,7 @@
 		<filter-name>shiroFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
+	</filter-mapping> -->
 
 	<servlet>
 		<servlet-name>springDispatcher</servlet-name>

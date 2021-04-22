@@ -14,7 +14,7 @@
 		<maven.test.skip>true</maven.test.skip>
 		<spring.version>4.3.20.RELEASE</spring.version>
 		<hibernate.version>5.0.12.Final</hibernate.version>
-		<shiro.version>1.2.3</shiro.version>
+		<shiro.version>1.7.1</shiro.version>
 		<myjar.version>1.0.0</myjar.version>
 	</properties>
 

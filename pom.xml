@@ -12,7 +12,7 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<maven.test.skip>true</maven.test.skip>
-		<spring.version>5.2.12.RELEASE</spring.version>
+		<spring.version>5.3.19</spring.version>
 		<hibernate.version>5.0.12.Final</hibernate.version>
 		<shiro.version>1.7.1</shiro.version>
 		<myjar.version>1.0.0</myjar.version>
